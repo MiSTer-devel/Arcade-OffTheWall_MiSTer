@@ -1,0 +1,8 @@
+# The core's PLL. Written by hand instead of by the wizard: only these file
+# registrations and the instance settings in pll/pll_0002.qip affect the
+# build. The wizard's own records are left out because they would no longer
+# match once the settings in pll/pll_0002.v are edited by hand.
+
+set_global_assignment -library "pll" -name VERILOG_FILE [file join $::quartus(qip_path) "pll.v"]
+set_global_assignment -library "pll" -name VERILOG_FILE [file join $::quartus(qip_path) "pll/pll_0002.v"]
+set_global_assignment -library "pll" -name QIP_FILE     [file join $::quartus(qip_path) "pll/pll_0002.qip"]

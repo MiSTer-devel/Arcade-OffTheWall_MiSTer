@@ -1,0 +1,6 @@
+# Auto detect text files and normalise line endings
+* text=auto
+
+# Binary release files must never be line-ending normalised
+*.rbf binary
+*.sof binary
