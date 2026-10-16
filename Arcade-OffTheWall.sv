@@ -40,12 +40,15 @@ localparam CONF_STR = {
 	"O[4],Orientation,Original,Flip;",
 	"O[22:20],Scale,Normal,V-Integer,HV-Integer,Narrower HV-Integer;",
 	"-;",
-	"P1,Analog alignment;",
+	// CRT Adjust: analog picture alignment, Off by default. The amounts keep the
+	// bits the old analog adjust used; the old H-Shift bits (40:35) stay unused.
+	// H1 hides the amounts while the stage is off.
+	"P1,CRT Adjust;",
 	"P1-;",
-	"P1O[27:23],CRT H-Size,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
-	"P1O[34:28],CRT H-Position,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,+16,+17,+18,+19,+20,+21,+22,+23,+24,+25,+26,+27,+28,+29,+30,+31,+32,+33,+34,+35,+36,+37,+38,+39,+40,+41,+42,+43,+44,+45,+46,+47,+48,+49,+50,+51,+52,+53,+54,+55,+56,+57,+58,+59,+60,+61,+62,+63,-64,-63,-62,-61,-60,-59,-58,-57,-56,-55,-54,-53,-52,-51,-50,-49,-48,-47,-46,-45,-44,-43,-42,-41,-40,-39,-38,-37,-36,-35,-34,-33,-32,-31,-30,-29,-28,-27,-26,-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
-	"P1O[40:35],Analog VGA H-Shift,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,+16,+17,+18,+19,+20,+21,+22,+23,+24,+25,+26,+27,+28,+29,+30,+31,-32,-31,-30,-29,-28,-27,-26,-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
-	"P1O[46:41],Analog VGA V-Shift,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,+16,+17,+18,+19,+20,+21,+22,+23,+24,+25,+26,+27,+28,+29,+30,+31,-32,-31,-30,-29,-28,-27,-26,-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
+	"P1O[47],CRT Adjust,Off,On;",
+	"H1P1O[27:23],CRT H-Size,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
+	"H1P1O[34:28],CRT H-Position,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,+16,+17,+18,+19,+20,+21,+22,+23,+24,+25,+26,+27,+28,+29,+30,+31,+32,+33,+34,+35,+36,+37,+38,+39,+40,+41,+42,+43,+44,+45,+46,+47,+48,+49,+50,+51,+52,+53,+54,+55,+56,+57,+58,+59,+60,+61,+62,+63,-64,-63,-62,-61,-60,-59,-58,-57,-56,-55,-54,-53,-52,-51,-50,-49,-48,-47,-46,-45,-44,-43,-42,-41,-40,-39,-38,-37,-36,-35,-34,-33,-32,-31,-30,-29,-28,-27,-26,-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
+	"H1P1O[46:41],CRT V-Shift,0,+1,+2,+3,+4,+5,+6,+7,+8,+9,+10,+11,+12,+13,+14,+15,+16,+17,+18,+19,+20,+21,+22,+23,+24,+25,+26,+27,+28,+29,+30,+31,-32,-31,-30,-29,-28,-27,-26,-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1;",
 	"-;",
 	// The control panel: whirly-gigs (spinners) or 8-way joysticks. The game
 	// finds out by itself which one is moving.
@@ -85,6 +88,10 @@ wire [15:0] joystick_l_analog_0, joystick_l_analog_1, joystick_l_analog_2;
 wire  [8:0] spinner_0, spinner_1, spinner_2;
 wire  [7:0] paddle_0, paddle_1, paddle_2;
 
+// CRT Adjust runs only on the native 15 kHz output: its read rate assumes
+// the native pixel enable, so it stays off while the scandoubler is forced.
+wire crt_enable = status[47] & ~forced_scandoubler;
+
 hps_io #(.CONF_STR(CONF_STR)) hps_io
 (
 	.clk_sys(clk_sys),
@@ -97,7 +104,7 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 
 	.buttons(buttons),
 	.status(status),
-	.status_menumask(16'd0),
+	.status_menumask({14'd0, ~crt_enable, 1'b0}),
 
 	.ioctl_download(ioctl_download),
 	.ioctl_wr(ioctl_wr),
@@ -207,13 +214,15 @@ assign AUDIO_R = audio;
 wire [7:0] adj_r, adj_g, adj_b;
 wire       adj_hs, adj_vs, adj_hb, adj_vb, adj_ce;
 
-offtwall_analog_adjust #(.H_TOTAL(456), .V_TOTAL(262), .CLK_PER_PIX(8)) u_analog_adjust
+offtwall_analog_adjust #(
+	.H_TOTAL(456), .V_TOTAL(262), .CLK_PER_PIX(8), .HPOS_MODE(1), .AW(11)
+) u_analog_adjust
 (
 	.clk        (clk_sys),
 	.ce_pix     (ce_pix),
+	.osd_on     (crt_enable),
 	.osd_hsize  (status[27:23]),
 	.osd_hpos   (status[34:28]),
-	.osd_hshift (status[40:35]),
 	.osd_vshift (status[46:41]),
 	.r_in(core_r), .g_in(core_g), .b_in(core_b),
 	.hs_in(core_hs), .vs_in(core_vs), .hb_in(core_hb), .vb_in(core_vb),

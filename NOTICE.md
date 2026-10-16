@@ -18,9 +18,11 @@ the Rampart MiSTer core (Copyright (C) 2026 RetroShrimp), whose behaviour
 follows leta_rep.vhd by JROK from the Atari System 1 core and whose structure
 follows the Blasteroids core. The sound board (rtl/sound) is the Batman
 MiSTer core's JSA III model, whose structure follows the Skull & Crossbones
-core. The SDRAM controller, the EEPROM save controller and the analog
-output alignment come from the Relief Pitcher and Batman cores (after Skull
-& Crossbones; analog_hsize.sv by Umberto Parisi). The control mapping and
+core. The SDRAM controller and the EEPROM save controller come from the Relief
+Pitcher and Batman cores (after Skull & Crossbones). The CRT Adjust stage
+uses crt_adjust.sv from MiSTer-CRT-Adjust (commit c682de9) by Umberto Parisi
+(rmonic79), GPL-3.0-or-later, with four adaptations listed in its header; its
+glue follows the Blasteroids core (RetroShrimp). The control mapping and
 the spinner pacing come from the Rampart core (RetroShrimp), after the
 Blasteroids core. Each file keeps its notice.
 

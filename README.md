@@ -1,4 +1,4 @@
-# Off the Wall for MiSTer FPGA
+ Off the Wall for MiSTer FPGA
 
 An FPGA core for **Off the Wall**, Atari Games' 1991 ball-and-paddle game for
 up to three players, for the [MiSTer](https://github.com/MiSTer-devel/Main_MiSTer/wiki)
@@ -90,7 +90,7 @@ control is fitted.
 | Aspect ratio | Original (4:3), Full Screen, or the two custom ratios from `MiSTer.ini` |
 | Orientation | Original, or Flip (the picture turned 180 degrees, for a cocktail table) |
 | Scale | Normal, V-Integer, HV-Integer, Narrower HV-Integer |
-| Analog alignment | CRT H-Size, CRT H-Position, Analog VGA H-Shift and V-Shift for analog video output; at 0 they leave the picture untouched |
+| CRT Adjust | Off by default. On: CRT H-Size, CRT H-Position and CRT V-Shift for analog video output (native 15 kHz only; off while the scandoubler is forced). Off leaves the picture untouched |
 | Control panel | Whirly-gigs or Joysticks |
 | Whirly-gig speed, direction | see Controls |
 | Service | the board's self-test switch |
@@ -225,7 +225,7 @@ rtl/offtwall_core.sv         the game board, the sound board and their memories
 rtl/main/                    68000, program ROM and bank GAL, decode, wait states, EEPROM, watchdog
 rtl/io/                      I/O block, LETA, whirly-gig and MiSTer control mapping
 rtl/video/                   VAD, video RAM, playfield, motion objects, line buffer, mixer, colour RAM,
-                             analog output alignment
+                             CRT Adjust stage
 rtl/gal/                     GAL equations of the game board
 rtl/sound/                   the JSA III sound board
 rtl/mem/                     ROM download, SDRAM controller, graphics ROM reader
@@ -247,7 +247,7 @@ and every file keeps its own notice.
 | fx68k (68000) | Jorge Cwik | GPL-3.0 |
 | T65 (6502) | Daniel Wallner, Mike Johnson, Wolfgang Scherr, Morten Leikvoll | BSD-style |
 | jt51 (YM2151) | José Tejada (jotego) | GPL-3.0-or-later |
-| `analog_hsize.sv` | Umberto Parisi (rmonic79) | GPL-3.0-or-later |
+| `crt_adjust.sv` (MiSTer-CRT-Adjust c682de9) | Umberto Parisi (rmonic79) | GPL-3.0-or-later |
 | MiSTer framework (`sys/`) | Alexey Melnikov (sorgelig) and contributors | GPL-2.0-or-later / GPL-3.0-or-later per file |
 
 The core builds on earlier Atari MiSTer cores: Relief Pitcher, which runs on
