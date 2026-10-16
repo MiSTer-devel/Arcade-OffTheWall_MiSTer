@@ -1,4 +1,4 @@
- Off the Wall for MiSTer FPGA
+# Off the Wall for MiSTer FPGA
 
 An FPGA core for **Off the Wall**, Atari Games' 1991 ball-and-paddle game for
 up to three players, for the [MiSTer](https://github.com/MiSTer-devel/Main_MiSTer/wiki)
