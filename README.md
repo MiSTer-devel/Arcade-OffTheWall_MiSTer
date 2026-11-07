@@ -28,8 +28,8 @@ graphics ROMs.
 
 ## Installing
 
-1. Copy `releases/OffTheWall_<date>.rbf` to `_Arcade/cores/` on the SD card.
-   When updating, delete the older `OffTheWall_*.rbf` first.
+1. Copy `releases/Arcade-OffTheWall_<date>.rbf` to `_Arcade/cores/` on the SD
+   card. When updating, delete the older `Arcade-OffTheWall_*.rbf` first.
 2. Copy `releases/Off the Wall.mra` to `_Arcade/`. For the cocktail version,
    also copy the folder `releases/_alternatives/_Off the Wall` to
    `_Arcade/_alternatives/`.
@@ -205,7 +205,8 @@ compared with a real Off the Wall board.
 
 Quartus Prime Lite 17.0.2. Open `OffTheWall.qpf` and compile, or run
 `quartus_sh --flow compile OffTheWall` in this folder; the bitstream is
-`output_files/OffTheWall.rbf`. The framework writes the build date into the
+`output_files/OffTheWall.rbf` (the release copy is renamed
+`Arcade-OffTheWall_<date>.rbf`). The framework writes the build date into the
 bitstream, so a build made on another day differs from the release.
 
 Source files are listed in `files.qip`; add new ones there by hand, not from
